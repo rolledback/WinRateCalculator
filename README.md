@@ -8,4 +8,6 @@ Example, solves the question of: how many battles do I need to play at a win rat
 
 The program requires an application_id from Wargaming. More information can be found here: https://na.wargaming.net/developers/applications/
 
+This program requires the requests library for python which can be found here: http://docs.python-requests.org/en/latest/
+
 Feel free to add feature and submit via pull request. This program may be added to a full suite of World of Tanks related command line tools at a later date.
