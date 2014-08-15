@@ -3,13 +3,14 @@ import requests
 import math
 
 class WinRateCalculator(object):
-   base_url = 'https://api.worldoftanks.com/wot/account/'
-   application_id = '1379369a8b79ed7fc6c715c410fd4eae'
+   base_url = 'https://api.worldoftanks.com/wot/'
+   application_id = 'insert application id here'
    account_id = ''
 
    wins = 0.0
    losses = 0.0
    battles = 0.0
+   win_rate = 0.0
 
    goal_rate = 0.0
    milestones = {}
@@ -18,11 +19,19 @@ class WinRateCalculator(object):
    new_wins = 0.0
    new_losses = 0.0
 
+   vehicle_ids = {}
+
+   def loadVehicles(self):
+      request = requests.get(self.base_url + 'encyclopedia/tanks/?application_id=' + self.application_id + '&fields=tank_id,short_name_i18n')
+      data = request.json()['data']
+      for tank_id in data:
+         self.vehicle_ids[tank_id] = data[tank_id]['short_name_i18n']
+
    def getAccountId(self):
       # Get account id
       username = raw_input('Player name: ')
-      print 'Retrieving account...'
-      request = requests.get(self.base_url + 'list/?application_id=' + self.application_id + '&search=' + username)
+      print '\nRetrieving account...'
+      request = requests.get(self.base_url + 'account/list/?application_id=' + self.application_id + '&search=' + username)
       index = 0
 
       # No results
@@ -42,10 +51,21 @@ class WinRateCalculator(object):
          print ''
       self.account_id = str(request.json()['data'][index]['account_id'])
 
+   # Choose between overall and vehicle request
+   def chooseAndMakeRequest(self):
+      print 'Calculate based off of profile win rate or specific tank (profile/tank):'
+      input = ''
+      while input != 'profile' and input != 'tank':
+         input = raw_input('> ')
+      if input == 'profile':
+         self.overallRequest()
+      else:
+         self.vehicleRequest()
+
    # Get player stats
    def overallRequest(self):
       print 'Retrieving stats...'
-      request = requests.get(self.base_url + 'info/?application_id=' + self.application_id + '&account_id=' + self.account_id)
+      request = requests.get(self.base_url + 'account/info/?application_id=' + self.application_id + '&account_id=' + self.account_id)
       stats =  request.json()['data'][self.account_id]['statistics']['all']
 
       self.wins = stats['wins'] * 1.0
@@ -53,6 +73,29 @@ class WinRateCalculator(object):
       self.battles = stats['battles'] * 1.0
       if self.battles > 0:
          self.win_rate = self.wins / self.battles * 100.0
+      else:
+         self.win_rate = 0
+
+   # Get vehicle stats
+   def vehicleRequest(self):
+      request = requests.get(self.base_url + 'account/tanks/?application_id=' + self.application_id + '&account_id=' + self.account_id)
+      print 'Choose tank stats to use:'
+      player_tanks = []
+      for tank in request.json()['data'][self.account_id]:
+         player_tanks.append(self.vehicle_ids[str(tank['tank_id'])])
+      for i in range(len(player_tanks)):
+         print str(i + 1) + '. ' + player_tanks[i]
+      choice = input('Tank number: ')
+      if choice < 1 or choice > len(player_tanks):
+         exit()
+      index = choice - 1
+
+      stats = request.json()['data'][self.account_id][index]['statistics']
+      self.wins = stats['wins'] * 1.0
+      self.battles = stats['battles'] * 1.0
+      self.losses = self.battles - self.wins
+      if self.battles > 0:
+         self.win_rate = self.wins /self.battles * 100
       else:
          self.win_rate = 0
 
@@ -108,8 +151,9 @@ class WinRateCalculator(object):
 
    def run(self):
       print '\vWoT Win Rate Calculator'
+      self.loadVehicles()
       self.getAccountId()
-      self.overallRequest()
+      self.chooseAndMakeRequest()
       self.displayStats()
       self.getGoal()
       self.calcBattlesForGoal()
