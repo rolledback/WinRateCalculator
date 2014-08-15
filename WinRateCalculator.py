@@ -82,9 +82,11 @@ class WinRateCalculator(object):
       print 'Choose tank stats to use:'
       player_tanks = []
       for tank in request.json()['data'][self.account_id]:
-         player_tanks.append(self.vehicle_ids[str(tank['tank_id'])])
+         tank_win_rate = (tank['statistics']['wins'] * 1.0 / tank['statistics']['battles']) * 100
+         tank_battles = tank['statistics']['battles']
+         player_tanks.append(self.vehicle_ids[str(tank['tank_id'])] + ', ' + str(tank_win_rate) + '%, ' + str(tank_battles) + ' battles')
       for i in range(len(player_tanks)):
-         print str(i + 1) + '. ' + player_tanks[i]
+         print str(i + 1) + '. ' + str(player_tanks[i])
       choice = input('Tank number: ')
       if choice < 1 or choice > len(player_tanks):
          exit()
