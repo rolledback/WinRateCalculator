@@ -114,22 +114,29 @@ class WinRateCalculator(object):
       self.new_rate = input('New rate: ')
       self.goal_rate = input('Goal rate: ')
 
-      if self.goal_rate <= self.win_rate:
+      if self.goal_rate == self.win_rate:
          print 'Goal already achieved!'
          exit()
 
-      if self.goal_rate >= self.new_rate:
+      if self.goal_rate >= self.new_rate and self.goal_rate > self.win_rate:
          print 'Goal not possible.'
          exit()
 
    def calcBattlesForGoal(self):
-      next_milestone = math.floor(self.win_rate + 1)
+      increasing = self.new_rate > self.goal_rate
 
+      if increasing:
+         next_milestone = math.floor(self.win_rate + 1)
+      else:
+         next_milestone = math.ceil(self.win_rate - 1)
       # Calculations
-      while self.win_rate < self.goal_rate:
-         if self.win_rate >= next_milestone:
-            self.milestones[str(self.win_rate)] = self.new_wins + self.new_losses
-            next_milestone = math.floor(next_milestone + 1)
+      while (increasing and self.win_rate < self.goal_rate) or (not increasing and self.win_rate > self.goal_rate):
+         if (increasing and self.win_rate >= next_milestone) or (not increasing and self.win_rate <= next_milestone):
+            self.milestones[str(next_milestone)] = self.new_wins + self.new_losses
+            if increasing:
+               next_milestone = math.floor(next_milestone + 1)
+            else:
+               next_milestone = math.ceil(next_milestone - 1)
          self.battles = self.battles + 1
          if random.randint(1, 100) < self.new_rate:
             self.new_wins = self.new_wins + 1
