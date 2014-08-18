@@ -10,4 +10,6 @@ The program requires an application_id from Wargaming. More information can be f
 
 This program requires the requests library for python which can be found here: http://docs.python-requests.org/en/latest/
 
+This program requires matplotlib which can be found here: http://matplotlib.org
+
 Feel free to add feature and submit via pull request. This program may be added to a full suite of World of Tanks related command line tools at a later date.

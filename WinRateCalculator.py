@@ -1,6 +1,7 @@
 import random
 import requests
 import math
+import matplotlib.pyplot as plt
 
 class WinRateCalculator(object):
    base_url = 'https://api.worldoftanks.com/wot/'
@@ -14,6 +15,7 @@ class WinRateCalculator(object):
 
    goal_rate = 0.0
    milestones = {}
+   data_points = list()
 
    new_rate = 0.0
    new_wins = 0.0
@@ -21,6 +23,7 @@ class WinRateCalculator(object):
 
    vehicle_ids = {}
 
+   # load vehicle id mappings
    def loadVehicles(self):
       request = requests.get(self.base_url + 'encyclopedia/tanks/?application_id=' + self.application_id + '&fields=tank_id,short_name_i18n')
       data = request.json()['data']
@@ -29,7 +32,8 @@ class WinRateCalculator(object):
 
    def getAccountId(self):
       # Get account id
-      username = raw_input('Player name: ')
+      print 'Player name: '
+      username = raw_input('> ')
       print '\nRetrieving account...'
       request = requests.get(self.base_url + 'account/list/?application_id=' + self.application_id + '&search=' + username)
       index = 0
@@ -64,7 +68,7 @@ class WinRateCalculator(object):
 
    # Get player stats
    def overallRequest(self):
-      print 'Retrieving stats...'
+      print '\nRetrieving player stats...'
       request = requests.get(self.base_url + 'account/info/?application_id=' + self.application_id + '&account_id=' + self.account_id)
       stats =  request.json()['data'][self.account_id]['statistics']['all']
 
@@ -78,8 +82,8 @@ class WinRateCalculator(object):
 
    # Get vehicle stats
    def vehicleRequest(self):
+      print '\nRetrieving vehicle stats...'
       request = requests.get(self.base_url + 'account/tanks/?application_id=' + self.application_id + '&account_id=' + self.account_id)
-      print 'Choose tank stats to use:'
       player_tanks = []
       for tank in request.json()['data'][self.account_id]:
          tank_win_rate = (tank['statistics']['wins'] * 1.0 / tank['statistics']['battles']) * 100
@@ -87,7 +91,10 @@ class WinRateCalculator(object):
          player_tanks.append(self.vehicle_ids[str(tank['tank_id'])] + ', ' + str(tank_win_rate) + '%, ' + str(tank_battles) + ' battles')
       for i in range(len(player_tanks)):
          print str(i + 1) + '. ' + str(player_tanks[i])
-      choice = input('Tank number: ')
+
+      print 'Choose number of tank to use:'
+      choice = ''
+      choice = input('> ')
       if choice < 1 or choice > len(player_tanks):
          exit()
       index = choice - 1
@@ -123,21 +130,25 @@ class WinRateCalculator(object):
          exit()
 
    def calcBattlesForGoal(self):
-      increasing = self.new_rate > self.goal_rate
+      self.data_points.append(self.win_rate)
 
+      increasing = self.new_rate > self.goal_rate
       if increasing:
          next_milestone = math.floor(self.win_rate + 1)
       else:
          next_milestone = math.ceil(self.win_rate - 1)
       # Calculations
       while (increasing and self.win_rate < self.goal_rate) or (not increasing and self.win_rate > self.goal_rate):
+         self.data_points.append(self.win_rate)
+         
          if (increasing and self.win_rate >= next_milestone) or (not increasing and self.win_rate <= next_milestone):
-            self.milestones[str(next_milestone)] = self.new_wins + self.new_losses
+            self.milestones[next_milestone] = self.new_wins + self.new_losses
             if increasing:
                next_milestone = math.floor(next_milestone + 1)
             else:
                next_milestone = math.ceil(next_milestone - 1)
          self.battles = self.battles + 1
+         
          if random.randint(1, 100) < self.new_rate:
             self.new_wins = self.new_wins + 1
             self.wins = self.wins + 1
@@ -146,6 +157,7 @@ class WinRateCalculator(object):
             self.new_losses = self.new_losses + 1
             self.losses = self.losses + 1
             self.win_rate = self.wins / self.battles * 100
+      self.data_points.append(self.win_rate)
 
    def printResults(self):
       # Result printing
@@ -156,8 +168,12 @@ class WinRateCalculator(object):
 
       print "Milestones:"
       for p in sorted(self.milestones, key =  self.milestones.get):
-         print str(math.floor(float(p))) + ': ' + str(self.milestones[p]) + ' self.battles'
+         print str(math.floor(float(p))) + ': ' + str(self.milestones[p])
 
+      plt.plot(self.data_points)
+      plt.ylabel('Win Rate')
+      plt.xlabel('Battles')
+      plt.show()
    def run(self):
       print '\vWoT Win Rate Calculator'
       self.loadVehicles()
