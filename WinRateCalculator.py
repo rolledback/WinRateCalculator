@@ -3,6 +3,8 @@ import requests
 import math
 import matplotlib.pyplot as plt
 
+# last updated 9/6/14
+
 class WinRateCalculator(object):
    base_url = 'https://api.worldoftanks.com/wot/'
    application_id = 'insert application id here'
