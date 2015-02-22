@@ -1,0 +1,11 @@
+<head>
+    {% if title %}
+    <title>{{ title }} - webapp</title>
+    {% else %}
+    <title>Welcome!</title>
+    {% endif %}
+  </head>
+  <body>
+      <h1>Hello, {{ user.nickname }}!</h1>
+  </body>
+</html>
