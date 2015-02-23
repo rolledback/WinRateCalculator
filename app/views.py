@@ -1,5 +1,6 @@
 import requests
 import random
+import math
 from flask import Flask
 from flask import render_template
 from flask import request
@@ -75,28 +76,21 @@ def calc_battles():
     goal_rate = float(request.args['goal'])
 
     new_wins = 0.0
-    new_losses = 0.0
+    new_battles = 0.0
 
     increasing = goal_rate > curr_rate
 
     while((increasing and curr_rate < goal_rate) or (not increasing and curr_rate > goal_rate)):
         data_points.append(curr_rate)
-        battles = battles + 1
-
-        if(random.random() < new_rate / 100.0):
-            new_wins = new_wins + 1
-            wins = wins + 1
-        else:
-            new_losses = new_losses + 1
-            losses = losses + 1
-        
-        curr_rate = wins / battles * 100.0
+        new_battles = new_battles + 1
+        new_wins = float((new_battles * (new_rate / 100.0)))
+        curr_rate = (new_wins + wins) / (new_battles + battles) * 100.0
    
     result = {'new_wins': new_wins,
-              'new_losses': new_losses,
-              'num_battles': new_wins + new_losses,
+              'new_losses': new_battles - new_wins,
+              'new_battles': new_battles,
+              'new_rate': new_wins / new_battles * 100.0,
               'final_rate': curr_rate,
-              'new_rate': new_wins / (new_wins + new_losses) * 100.0,
               'data_points': data_points}
 
     return json.jsonify(result)
