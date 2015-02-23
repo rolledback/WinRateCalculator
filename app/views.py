@@ -1,4 +1,5 @@
 import requests
+import random
 from flask import Flask
 from flask import render_template
 from flask import request
@@ -49,14 +50,43 @@ def get_player(name):
 
     return str(player_tanks)
 
-# http://mrayermann.com:5000/calc?battles=100&curr=52.7&new=58.0&goal=55.0
+# http://mrayermann.com:5000/calc?battles=100&wins=54&curr=52.7&new=58.0&goal=55.0
 @app.route('/calc', methods = ['GET'])
 def calc_battles():
-    print request.args['battles']
-    print request.args['curr']
-    print request.args['new']
-    print request.args['goal']
-    return ''
+    data_points = []
+    
+    battles = float(request.args['battles'])
+    wins = float(request.args['wins'])
+    losses = battles - wins
+    curr_rate = float(request.args['curr'])
+    new_rate = float(request.args['new'])
+    goal_rate = float(request.args['goal'])
+
+    new_wins = 0
+    new_losses = 0
+
+    increasing = goal_rate > curr_rate
+
+    while((increasing and curr_rate < goal_rate) or (not increasing and curr_rate > goal_rate)):
+        data_points.append(curr_rate)
+        battles = battles + 1
+
+        if(random.randint(1, 100) < new_rate):
+            new_wins = new_wins + 1
+            wins = wins + 1
+        else:
+            new_losses = new_losses + 1
+            losses = losses + 1
+        
+        curr_rate = wins / battles * 100
+   
+    result = {'data_points': data_points,
+              'new_wins': new_wins,
+              'new_losses': new_losses,
+              'num_battles': new_wins + new_losses,
+              'final_rate': curr_rate}
+
+    return str(result)
 
 # load vehicle ID information from Wargaming API
 def load_vehicles():
