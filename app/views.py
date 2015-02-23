@@ -24,10 +24,23 @@ def get_veh_ids():
 def get_player(name):
     if(name not in id_cache):
         request = requests.get(base_url + 'account/list/?application_id=' + app_id + '&search=' + name)
-        data = request.json()['data']
-        id_cache[name] = data[0]['account_id']
+        id_data = request.json()['data']
+        id_cache[name] = str(id_data[0]['account_id'])
     user_id = id_cache[name]
-    return str(id_cache)
+
+    player_tanks = {}
+    request = requests.get(base_url + 'account/tanks/?application_id=' + app_id + '&account_id=' + user_id)
+    tank_data = request.json()['data'][user_id]
+
+    for tank in tank_data:
+        tank_win_rate = (tank['statistics']['wins'] * 1.0 / tank['statistics']['battles']) * 100
+        tank_battles = tank['statistics']['battles']
+
+        stats_record = {'win_rate': str(tank_win_rate),
+                        'battles': str(tank_battles)}
+        player_tanks[vehicle_ids[str(tank['tank_id'])]] = stats_record
+
+    return str(player_tanks)
 
 def load_vehicles():
     request = requests.get(base_url + 'encyclopedia/tanks/?application_id=' + app_id + '&fields=tank_id,short_name_i18n')
