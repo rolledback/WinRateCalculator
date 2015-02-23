@@ -1,6 +1,4 @@
 import requests
-import random
-import math
 from flask import Flask
 from flask import render_template
 from flask import request
@@ -11,7 +9,6 @@ app_id = ''
 base_url = 'https://api.worldoftanks.com/wot/'
 id_cache = {}
 vehicle_ids = {}
-random.seed(1337)
 
 @app.route('/')
 @app.route('/index')
@@ -53,7 +50,7 @@ def get_player(name):
         stats_record = {'win_rate': str(tank_win_rate),
                         'wins': str(tank_wins),
                         'battles': str(tank_battles)}
-        player_tanks[vehicle_ids[str(tank['tank_id'])]] = stats_record
+        player_tanks[vehicle_ids[str(tank['tank_id'])]['short_name']] = stats_record
 
         win_total = win_total + tank_wins
         battle_total = battle_total + tank_battles
@@ -97,10 +94,10 @@ def calc_battles():
 
 # load vehicle ID information from Wargaming API
 def load_vehicles():
-    request = requests.get(base_url + 'encyclopedia/tanks/?application_id=' + app_id + '&fields=tank_id,short_name_i18n')
+    request = requests.get(base_url + 'encyclopedia/tanks/?application_id=' + app_id + '&fields=tank_id,short_name_i18n,image')
     data = request.json()['data']
     for tank_id in data:
-        vehicle_ids[tank_id] = data[tank_id]['short_name_i18n']
+        vehicle_ids[tank_id] = {'short_name': data[tank_id]['short_name_i18n'], 'image': data[tank_id]['image']}
 
 if __name__ == '__main__':
     with open('config.ini', 'r') as in_file:
