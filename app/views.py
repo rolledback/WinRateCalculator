@@ -10,6 +10,7 @@ app_id = ''
 base_url = 'https://api.worldoftanks.com/wot/'
 id_cache = {}
 vehicle_ids = {}
+random.seed(1337)
 
 @app.route('/')
 @app.route('/index')
@@ -20,12 +21,12 @@ def index():
 # view current vehicle IDs
 @app.route('/vehicles', methods = ['GET'])
 def get_veh_ids():
-    return str(vehicle_ids)
+    return json.jsonify(vehicle_ids)
 
 # view player ID cache
 @app.route('/cache', methods = ['GET'])
 def get_id_cache():
-    return str(id_cache)
+    return json.jsonify(id_cache)
 
 @app.route('/player/<name>', methods = ['GET'])
 def get_player(name):
@@ -48,22 +49,22 @@ def get_player(name):
                         'battles': str(tank_battles)}
         player_tanks[vehicle_ids[str(tank['tank_id'])]] = stats_record
 
-    return str(player_tanks)
+    return json.jsonify(player_tanks)
 
-# http://mrayermann.com:5000/calc?battles=100&wins=54&curr=52.7&new=58.0&goal=55.0
+# http://mrayermann.com:5000/calc?battles=1000&wins=527&curr=52.7&new=60.0&goal=55.0
 @app.route('/calc', methods = ['GET'])
 def calc_battles():
     data_points = []
     
     battles = float(request.args['battles'])
     wins = float(request.args['wins'])
-    losses = battles - wins
+    losses = float(battles - wins)
     curr_rate = float(request.args['curr'])
     new_rate = float(request.args['new'])
     goal_rate = float(request.args['goal'])
 
-    new_wins = 0
-    new_losses = 0
+    new_wins = 0.0
+    new_losses = 0.0
 
     increasing = goal_rate > curr_rate
 
@@ -71,22 +72,23 @@ def calc_battles():
         data_points.append(curr_rate)
         battles = battles + 1
 
-        if(random.randint(1, 100) < new_rate):
+        if(random.random() < new_rate / 100.0):
             new_wins = new_wins + 1
             wins = wins + 1
         else:
             new_losses = new_losses + 1
             losses = losses + 1
         
-        curr_rate = wins / battles * 100
+        curr_rate = wins / battles * 100.0
    
-    result = {'data_points': data_points,
-              'new_wins': new_wins,
+    result = {'new_wins': new_wins,
               'new_losses': new_losses,
               'num_battles': new_wins + new_losses,
-              'final_rate': curr_rate}
+              'final_rate': curr_rate,
+              'new_rate': new_wins / (new_wins + new_losses) * 100.0,
+              'data_points': data_points}
 
-    return str(result)
+    return json.jsonify(result)
 
 # load vehicle ID information from Wargaming API
 def load_vehicles():
