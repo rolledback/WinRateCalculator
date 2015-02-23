@@ -49,6 +49,15 @@ def get_player(name):
 
     return str(player_tanks)
 
+# http://mrayermann.com:5000/calc?battles=100&curr=52.7&new=58.0&goal=55.0
+@app.route('/calc', methods = ['GET'])
+def calc_battles():
+    print request.args['battles']
+    print request.args['curr']
+    print request.args['new']
+    print request.args['goal']
+    return ''
+
 # load vehicle ID information from Wargaming API
 def load_vehicles():
     request = requests.get(base_url + 'encyclopedia/tanks/?application_id=' + app_id + '&fields=tank_id,short_name_i18n')
