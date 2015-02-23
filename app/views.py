@@ -13,8 +13,7 @@ vehicle_ids = {}
 @app.route('/')
 @app.route('/index')
 def index():
-    user = {'nickname': 'Matthew'}
-    return render_template('index.html', title = 'Home', user = user)
+    return render_template('index.html')
 
 # view current vehicle IDs
 @app.route('/vehicles', methods = ['GET'])
@@ -32,6 +31,8 @@ def get_player(name):
     if(name not in id_cache):
         request = requests.get(base_url + 'account/list/?application_id=' + app_id + '&search=' + name)
         id_data = request.json()['data']
+        if(len(id_data) < 1):
+            return render_template('no_player.html')
         id_cache[name] = str(id_data[0]['account_id'])
     user_id = id_cache[name]
 
@@ -55,7 +56,7 @@ def get_player(name):
         win_total = win_total + tank_wins
         battle_total = battle_total + tank_battles
 
-    player_tanks['all'] = {'win_rate': str(win_total / battle_total * 100),
+    player_tanks['all'] = {'win_rate': '0' if battle_total == 0 else str(win_total / battle_total * 100),
                            'wins': str(win_total),
                            'battles': str(battle_total)}
     return json.jsonify(player_tanks)
