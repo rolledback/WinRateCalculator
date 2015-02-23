@@ -42,13 +42,24 @@ def get_player(name):
     request = requests.get(base_url + 'account/tanks/?application_id=' + app_id + '&account_id=' + user_id)
     tank_data = request.json()['data'][user_id]
 
+    win_total = 0.0
+    battle_total = 0.0
+
     for tank in tank_data:
         tank_win_rate = (tank['statistics']['wins'] * 1.0 / tank['statistics']['battles']) * 100
+        tank_wins = tank['statistics']['wins']
         tank_battles = tank['statistics']['battles']
         stats_record = {'win_rate': str(tank_win_rate),
+                        'wins': str(tank_wins),
                         'battles': str(tank_battles)}
         player_tanks[vehicle_ids[str(tank['tank_id'])]] = stats_record
 
+        win_total = win_total + tank_wins
+        battle_total = battle_total + tank_battles
+
+    player_tanks['all'] = {'win_rate': str(win_total / battle_total * 100),
+                           'wins': str(win_total),
+                           'battles': str(battle_total)}
     return json.jsonify(player_tanks)
 
 # http://mrayermann.com:5000/calc?battles=1000&wins=527&curr=52.7&new=60.0&goal=55.0
