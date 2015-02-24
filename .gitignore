@@ -1,4 +1,4 @@
 *.ini
 *.pyc
-static/canvasjs/*
+/static/canvasjs/
 nohup.out
