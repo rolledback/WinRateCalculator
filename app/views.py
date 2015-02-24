@@ -21,6 +21,11 @@ def index():
 def get_veh_ids():
     return json.jsonify(vehicle_ids)
 
+# about page
+@app.route('/about', methods = ['GET'])
+def about():
+    return render_template('about.html')
+
 # view player ID cache
 @app.route('/cache', methods = ['GET'])
 def get_id_cache():
