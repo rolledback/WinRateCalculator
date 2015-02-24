@@ -13,6 +13,7 @@ vehicle_ids = {}
 @app.route('/')
 @app.route('/index')
 def index():
+    print request
     return render_template('index.html')
 
 # view current vehicle IDs
@@ -50,16 +51,18 @@ def get_player(name):
         tank_battles = tank['statistics']['battles']
         stats_record = {'win_rate': str(tank_win_rate),
                         'wins': str(tank_wins),
-                        'battles': str(tank_battles)}
+                        'battles': str(tank_battles),
+                        'image': vehicle_ids[str(tank['tank_id'])]['image']}
         player_tanks[vehicle_ids[str(tank['tank_id'])]['short_name']] = stats_record
 
         win_total = win_total + tank_wins
         battle_total = battle_total + tank_battles
 
-    player_tanks['all'] = {'win_rate': '0' if battle_total == 0 else str(win_total / battle_total * 100),
+    player_tanks['Overall'] = {'win_rate': '0' if battle_total == 0 else str(win_total / battle_total * 100),
                            'wins': str(win_total),
-                           'battles': str(battle_total)}
-    return json.jsonify(player_tanks)
+                           'battles': str(battle_total),
+                           'image': ""}
+    return render_template('player.html', player_tanks = player_tanks, name = name)
 
 # http://mrayermann.com:5000/calc?battles=1000&wins=527&curr=52.7&new=60.0&goal=55.0
 @app.route('/calc', methods = ['GET'])
@@ -95,10 +98,10 @@ def calc_battles():
 
 # load vehicle ID information from Wargaming API
 def load_vehicles():
-    request = requests.get(base_url + 'encyclopedia/tanks/?application_id=' + app_id + '&fields=tank_id,short_name_i18n,image')
+    request = requests.get(base_url + 'encyclopedia/tanks/?application_id=' + app_id + '&fields=tank_id,short_name_i18n,image_small')
     data = request.json()['data']
     for tank_id in data:
-        vehicle_ids[tank_id] = {'short_name': data[tank_id]['short_name_i18n'], 'image': data[tank_id]['image']}
+        vehicle_ids[tank_id] = {'short_name': data[tank_id]['short_name_i18n'], 'image': data[tank_id]['image_small']}
 
 if __name__ == '__main__':
     with open('config.ini', 'r') as in_file:

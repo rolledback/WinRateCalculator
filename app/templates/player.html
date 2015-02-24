@@ -1,12 +1,13 @@
 <html>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
     <body>
-        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-        <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
         <nav class="navbar navbar-default navbar-top navbar-static-top">
             <div class="container-fulid">
@@ -29,6 +30,32 @@
                 </form>
             </div>
         </nav>
-
+        <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">{{ name }}</div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tank</th>
+                        <th>Battles</th>
+                        <th>Wins</th>
+                        <th>Win Rate</th>
+                    </tr>
+                    {% for key, value in player_tanks.iteritems() %}
+                    <tr>
+                        {% if value.image != "" %}
+                        <td><img src={{ value.image }}>{{ key }}</td>
+                        {% else %}
+                        <td>{{ key }} </td>
+                        {% endif %}
+                        <td>{{ value.battles }}</td>
+                        <td>{{ value.wins }}</td>
+                        <td>{{ value.win_rate }}</td>
+                    </tr>
+                    {% endfor %}
+                </thead>
+            </table>
+        </div>
+        </div>
     </body>
 </html>
