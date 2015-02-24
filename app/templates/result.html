@@ -1,7 +1,30 @@
 <html>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
+        <script type="text/javascript" src="{{ url_for('static', filename='canvasjs/canvasjs.min.js') }}"></script>
+        <script type="text/javascript">
+            window.onload = function () {
+                var chart = new CanvasJS.Chart("chartContainer", {
+                    theme: "theme2",
+                    animationEnabled: true,
+//                    axisX: {
+  //                      interval:100,
+    //                },
+                    axisY:{
+                        includeZero: false 
+                    },
+                    data: [{
+                        type: "line",
+                        showInLegend: "true",
+                        legendText: "Battles",
+                        dataPoints: {{ result.data_points|tojson|safe }}
+                    }]
+                });
+                chart.render();
+            }
+        </script>
     <body>
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -29,6 +52,10 @@
                 </form>
             </div>
         </nav>
-
+        <div class="container">
+        <div class="container-fluid">
+            <div id="chartContainer"></div>
+        </div>
+        </div>
     </body>
 </html>

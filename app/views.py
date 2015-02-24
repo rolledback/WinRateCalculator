@@ -92,7 +92,7 @@ def calc_battles():
     increasing = goal_rate > curr_rate
 
     while((increasing and curr_rate < goal_rate) or (not increasing and curr_rate > goal_rate)):
-        data_points.append(curr_rate)
+        data_points.append({'x' : int(new_battles), 'y' : curr_rate})
         new_battles = new_battles + 1
         new_wins = float((new_battles * (new_rate / 100.0)))
         curr_rate = (new_wins + wins) / (new_battles + battles) * 100.0
@@ -104,7 +104,7 @@ def calc_battles():
               'final_rate': curr_rate,
               'data_points': data_points}
 
-    return json.jsonify(result)
+    return render_template('result.html', result = result)
 
 # load vehicle ID information from Wargaming API
 def load_vehicles():
