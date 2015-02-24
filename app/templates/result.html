@@ -9,24 +9,8 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
         <script type="text/javascript" src="{{ url_for('static', filename='canvasjs/canvasjs.min.js') }}"></script>
-        <script type="text/javascript">
-            window.onload = function () {
-                var chart = new CanvasJS.Chart("chartContainer", {
-                    theme: "theme2",
-                    animationEnabled: true,
-                    axisY:{
-                        includeZero: false 
-                    },
-                    data: [{
-                        type: "line",
-                        showInLegend: "true",
-                        legendText: "Battles",
-                        dataPoints: {{ result.data_points|tojson|safe }}
-                    }]
-                });
-                chart.render();
-            }
-        </script>
+        <script type="text/javascript">var data = {{ result.data_points|tojson|safe }};</script>
+        <script type="text/javascript" src="{{ url_for('static', filename='graph.js') }}"></script>
     <body>
         <nav class="navbar navbar-default navbar-top navbar-static-top">
             <div class="container-fulid">
