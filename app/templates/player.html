@@ -41,12 +41,12 @@
                         <th>Wins</th>
                         <th>Win Rate</th>
                     </tr>
-                    {% for key, value in player_tanks.iteritems() %}
+                    {% for value in player_tanks %}
                     <tr>
                         {% if value.image != "" %}
-                        <td><img src={{ value.image }}>{{ key }}</td>
+                        <td><img src={{ value.image }}>{{ value.name }}</td>
                         {% else %}
-                        <td>{{ key }} </td>
+                        <td>{{ value.name }}</td>
                         {% endif %}
                         <td>{{ value.battles }}</td>
                         <td>{{ value.wins }}</td>

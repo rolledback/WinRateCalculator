@@ -38,7 +38,7 @@ def get_player(name):
     user_id = id_cache[name]
 
     # create JSON object with battle/win rate stats for the player's tanks
-    player_tanks = {}
+    player_tanks = []
     request = requests.get(base_url + 'account/tanks/?application_id=' + app_id + '&account_id=' + user_id)
     tank_data = request.json()['data'][user_id]
 
@@ -49,19 +49,24 @@ def get_player(name):
         tank_win_rate = (tank['statistics']['wins'] * 1.0 / tank['statistics']['battles']) * 100
         tank_wins = tank['statistics']['wins']
         tank_battles = tank['statistics']['battles']
-        stats_record = {'win_rate': str(tank_win_rate),
+        stats_record = {'name': vehicle_ids[str(tank['tank_id'])]['short_name'],
+                        'win_rate': str(tank_win_rate),
                         'wins': str(tank_wins),
                         'battles': str(tank_battles),
-                        'image': vehicle_ids[str(tank['tank_id'])]['image']}
-        player_tanks[vehicle_ids[str(tank['tank_id'])]['short_name']] = stats_record
+                        'image': vehicle_ids[str(tank['tank_id'])]['image'],
+                        'sort_value': 0}
+        player_tanks.append(stats_record)
 
         win_total = win_total + tank_wins
         battle_total = battle_total + tank_battles
 
-    player_tanks['Overall'] = {'win_rate': '0' if battle_total == 0 else str(win_total / battle_total * 100),
-                           'wins': str(win_total),
-                           'battles': str(battle_total),
-                           'image': ""}
+    player_tanks.append({'name': 'Overall',
+                         'win_rate': '0' if battle_total == 0 else str(win_total / battle_total * 100),
+                         'wins': str(win_total),
+                         'battles': str(battle_total),
+                         'image': "",
+                         'sort_value': 1})
+    player_tanks = sorted(player_tanks, key = lambda k: (k['sort_value'], float(k['battles'])), reverse = True)
     return render_template('player.html', player_tanks = player_tanks, name = name)
 
 # http://mrayermann.com:5000/calc?battles=1000&wins=527&curr=52.7&new=60.0&goal=55.0
