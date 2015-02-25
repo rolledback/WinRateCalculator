@@ -34,9 +34,19 @@
             </div>
         </nav>
         <div class="container">
+            <label>Desired Win Rate:</label>
+            <input type="number" placeholder={{ result.final_rate }}></input>
+            <label>Current Win Rate:</label>
+            <input type="number" placeholder={{ result.orig_rate }}></input>
+            <label>Play at Win Rate:</label>
+            <input type="number" placeholder={{ result.new_rate }}></input>
+            <button type="submit" class="btn btn-primary">Calculate</button>
+        </div>
+        <br>
+        <div class="container">
             <div id="chartContainer" style="height: 50%; width: 100%;"></div>
         </div>
-
+        <br>
         <div class="container">
             <div class="panel panel-default">
                 <div class="panel-heading">Results</div>

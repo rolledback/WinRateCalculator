@@ -1,6 +1,8 @@
 import requests
+import os
 from flask import Flask
 from flask import render_template
+from flask import redirect
 from flask import request
 from flask import json
 
@@ -90,14 +92,16 @@ def calc_battles():
     new_battles = 0.0
 
     increasing = goal_rate > curr_rate
-
+    orig_rate = curr_rate
     while((increasing and curr_rate < goal_rate) or (not increasing and curr_rate > goal_rate)):
         data_points.append({'x' : int(new_battles), 'y' : curr_rate})
         new_battles = new_battles + 1
         new_wins = float((new_battles * (new_rate / 100.0)))
         curr_rate = (new_wins + wins) / (new_battles + battles) * 100.0
    
-    result = {'new_wins': new_wins,
+    result = {'new_rate': new_rate,
+              'orig_rate': orig_rate,
+              'new_wins': new_wins,
               'new_losses': new_battles - new_wins,
               'new_battles': new_battles,
               'new_rate': new_wins / new_battles * 100.0,
