@@ -34,9 +34,27 @@
             </div>
         </nav>
         <div class="container">
-        <div class="container-fluid">
-            <div id="chartContainer"></div>
+            <div id="chartContainer" style="height: 50%; width: 100%;"></div>
         </div>
+
+        <div class="container">
+            <div class="panel panel-default">
+                <div class="panel-heading">Results</div>
+                <table class="table">
+                    <tr>
+                        <td>Total Battles:</td>
+                        <td>{{ result.new_battles }}</td>
+                    </tr>
+                    <tr>
+                        <td>Wins:</td>
+                        <td>{{ result.new_wins }}</td>
+                    </tr>
+                    <tr>
+                        <td>Losses:</td>
+                        <td>{{ result.new_losses }}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </body>
-</html>
+</html> 
