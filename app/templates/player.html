@@ -7,6 +7,8 @@
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='lovely_row.css') }}">
     </head>
     <body>
         <nav class="navbar navbar-default navbar-top navbar-static-top">
@@ -42,7 +44,7 @@
                         <th>Win Rate</th>
                     </tr>
                     {% for value in player_tanks %}
-                    <tr>
+                    <tr class="lovelyrow" onclick="location.href='http://mrayermann.com:5000/calc?battles={{ value.battles }}&wins={{ value.wins }}&curr={{ value.win_rate }}&new={{value.win_rate|float + 5 }}&goal={{ value.win_rate|float + 2.5 }}'">
                         {% if value.image != "" %}
                         <td><img src={{ value.image }}>{{ value.name }}</td>
                         {% else %}

@@ -57,7 +57,7 @@ def get_player(name):
         tank_wins = tank['statistics']['wins']
         tank_battles = tank['statistics']['battles']
         stats_record = {'name': vehicle_ids[str(tank['tank_id'])]['short_name'],
-                        'win_rate': str(tank_win_rate),
+                        'win_rate': str(round(tank_win_rate, 2)),
                         'wins': str(tank_wins),
                         'battles': str(tank_battles),
                         'image': vehicle_ids[str(tank['tank_id'])]['image'],
@@ -68,7 +68,7 @@ def get_player(name):
         battle_total = battle_total + tank_battles
 
     player_tanks.append({'name': 'Overall',
-                         'win_rate': '0' if battle_total == 0 else str(win_total / battle_total * 100),
+                         'win_rate': '0' if battle_total == 0 else str(round(win_total / battle_total * 100, 2)),
                          'wins': str(win_total),
                          'battles': str(battle_total),
                          'image': "",
