@@ -34,12 +34,12 @@
             </div>
         </nav>
         <div class="container">
-            <label>Desired Win Rate:</label>
-            <input type="number" placeholder={{ result.final_rate }}></input>
             <label>Current Win Rate:</label>
-            <input type="number" placeholder={{ result.orig_rate }}></input>
+            <input type="number" value={{ result.orig_rate }} step="any" min="0" max="100"></input>
+            <label>Desired Win Rate:</label>
+            <input type="number" value={{ result.final_rate }} step="any" min="0" max="100"></input>
             <label>Play at Win Rate:</label>
-            <input type="number" placeholder={{ result.new_rate }}></input>
+            <input type="number" value={{ result.new_rate }} step="any" min="0" max="100"></input>
             <button type="submit" class="btn btn-primary">Calculate</button>
         </div>
         <br>
@@ -65,6 +65,9 @@
                     </tr>
                 </table>
             </div>
+            {% if result.nick != '' %}
+            <a class="btn btn-primary" href="/player/{{ result.nick }}">Back to Player Page</a>
+            {% endif %}
         </div>
     </body>
 </html> 

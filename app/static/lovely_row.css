@@ -1,0 +1,17 @@
+/* Many thanks to Cloth Sword of Stackoverflow or this awesome CSS. */
+/* http://stackoverflow.com/questions/4904938/link-entire-table-row */
+
+tr.lovelyrow{
+  background-color: white;
+}
+tr.lovelyrow:hover{
+  background-color: hsl(0,0%,70%);
+  cursor: pointer;
+}
+table.nogap{
+  border-collapse: collapse;
+}
+td.nicepadding{
+  padding: 2px 10px 2px 10px;
+  border: 1px solid black;
+}

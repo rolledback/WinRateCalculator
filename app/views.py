@@ -79,6 +79,7 @@ def get_player(name):
 # http://mrayermann.com:5000/calc?battles=1000&wins=527&curr=52.7&new=60.0&goal=55.0
 @app.route('/calc', methods = ['GET'])
 def calc_battles():
+    print request.args
     data_points = []
     
     battles = float(request.args['battles'])
@@ -87,6 +88,11 @@ def calc_battles():
     curr_rate = float(request.args['curr'])
     new_rate = float(request.args['new'])
     goal_rate = float(request.args['goal'])
+
+    if('nick' in request.args):
+        nick =  request.args['nick']
+    else:
+        nick =''
 
     new_wins = 0.0
     new_battles = 0.0
@@ -106,7 +112,8 @@ def calc_battles():
               'new_battles': new_battles,
               'new_rate': new_wins / new_battles * 100.0,
               'final_rate': curr_rate,
-              'data_points': data_points}
+              'data_points': data_points,
+              'nick': nick}
 
     return render_template('result.html', result = result)
 
