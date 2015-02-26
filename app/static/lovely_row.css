@@ -5,7 +5,7 @@ tr.lovelyrow{
   background-color: white;
 }
 tr.lovelyrow:hover{
-  background-color: hsl(0,0%,70%);
+  background-color: hsl(0,0%,95%);
   cursor: pointer;
 }
 table.nogap{

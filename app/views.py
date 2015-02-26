@@ -111,7 +111,7 @@ def calc_battles():
               'new_losses': new_battles - new_wins,
               'new_battles': new_battles,
               'new_rate': new_wins / new_battles * 100.0,
-              'final_rate': curr_rate,
+              'goal_rate': goal_rate,
               'data_points': data_points,
               'nick': nick}
 
