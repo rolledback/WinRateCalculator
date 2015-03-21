@@ -1,0 +1,38 @@
+<link rel="stylesheet" href="/static/css/lovely_row.css">
+
+<div ng-if="name == ''" class="container">
+    <h1>Oops!</h1>
+    <p>There doesn't appear to appear to a player of that name on the North American server. Try searching for another name.</p>
+    <br>
+    <h1>:(</h1>
+</div>
+
+
+<div ng-if="name != ''" class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h3>{{ name }}</h3></div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tank</th>
+                    <th>Battles</th>
+                    <th>Wins</th>
+                    <th>Win Rate</th>
+                </tr>
+                <tr ng-repeat="tank in tanks" class="lovelyrow" onclick="location.href='/'">
+                    <td>
+                        <div ng-if="tank.image != ''">
+                            <img ng-src="{{ tank.image }}">{{ tank.name }}
+                        </div>
+                        <div ng-if="tank.image == ''">
+                            {{ tank.name }}
+                        </div>
+                    </td>
+                    <td>{{ tank.battles }}</td>
+                    <td>{{ tank.wins }}</td>
+                    <td>{{ tank.win_rate }}</td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 import requests
 import os
+
 from flask import Flask
 from flask import render_template
 from flask import redirect
@@ -15,32 +16,28 @@ vehicle_ids = {}
 @app.route('/')
 @app.route('/index')
 def index():
-    print request
-    return render_template('index.html')
+    return render_template('app.html')
 
 # view current vehicle IDs
-@app.route('/vehicles', methods = ['GET'])
+@app.route('/api/vehicles', methods = ['GET'])
 def get_veh_ids():
     return json.jsonify(vehicle_ids)
 
-# about page
-@app.route('/about', methods = ['GET'])
-def about():
-    return render_template('about.html')
-
-# view player ID cache
-@app.route('/cache', methods = ['GET'])
+# get player ID cache
+@app.route('/api/cache', methods = ['GET'])
 def get_id_cache():
     return json.jsonify(id_cache)
 
-@app.route('/player/<name>', methods = ['GET'])
+@app.route('/api/player/<name>', methods = ['GET'])
 def get_player(name):
+    result = {'name': '', 'tanks': []}
+
     # see if player id is in cache, if not then request via Wargaming API
     if(name not in id_cache):
         request = requests.get(base_url + 'account/list/?application_id=' + app_id + '&search=' + name)
+        if(len(request.json()['data']) < 1):
+            return json.jsonify(result)
         id_data = request.json()['data']
-        if(len(id_data) < 1):
-            return render_template('no_player.html')
         id_cache[name] = str(id_data[0]['account_id'])
     user_id = id_cache[name]
 
@@ -74,14 +71,16 @@ def get_player(name):
                          'image': "",
                          'sort_value': 1})
     player_tanks = sorted(player_tanks, key = lambda k: (k['sort_value'], float(k['battles'])), reverse = True)
-    return render_template('player.html', player_tanks = player_tanks, name = name)
+
+    result['tanks'] = player_tanks
+    result['name'] = name
+    return json.jsonify(result)
 
 # http://mrayermann.com:5000/calc?battles=1000&wins=527&curr=52.7&new=60.0&goal=55.0
-@app.route('/calc', methods = ['GET'])
+@app.route('/api/calc', methods = ['GET'])
 def calc_battles():
-    print request.args
     data_points = []
-    
+
     battles = float(request.args['battles'])
     wins = float(request.args['wins'])
     losses = float(battles - wins)
@@ -115,7 +114,7 @@ def calc_battles():
               'data_points': data_points,
               'nick': nick}
 
-    return render_template('result.html', result = result)
+    return json.jsonify(result)
 
 # load vehicle ID information from Wargaming API
 def load_vehicles():

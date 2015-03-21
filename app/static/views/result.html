@@ -1,0 +1,35 @@
+<div class="container">
+    <label>Current Win Rate:</label>
+    <input type="number" value="{{ orig_rate }}" step="any" min="0" max="100"></input>
+    <label>Desired Win Rate:</label>
+    <input type="number" value="{{ goal_rate }}" step="any" min="0" max="100"></input>
+    <label>Play at Win Rate:</label>
+    <input type="number" value="{{ new_rate }}" step="any" min="0" max="100"></input>
+    <button type="submit" class="btn btn-primary">Calculate</button>
+</div>
+<br>
+<div class="container">
+    <div id="chartContainer" style="height: 50%; width: 100%;"></div>
+</div>
+<br>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">Results</div>
+        <table class="table">
+            <tr>
+                <td>Total Battles:</td>
+                <td>{{ new_battles }}</td>
+            </tr>
+            <tr>
+                <td>Wins:</td>
+                <td>{{ new_wins }}</td>
+            </tr>
+            <tr>
+                <td>Losses:</td>
+                <td>{{ new_losses }}</td>
+            </tr>
+        </table>
+    </div>
+    <a class="btn btn-primary" href="#/player/{{ nick }}">Back to Player Page</a>
+    {{ data_points }}
+</div>
