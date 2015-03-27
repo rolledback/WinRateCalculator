@@ -11,7 +11,8 @@
 <div class="container">
     <div id="chartContainer" style="height: 50%; width: 100%;"></div>
 </div>
-<br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
 <div class="container">
     <div class="panel panel-default">
         <div class="panel-heading">Results</div>
@@ -30,6 +31,7 @@
             </tr>
         </table>
     </div>
-    <a class="btn btn-primary" href="#/player/{{ nick }}">Back to Player Page</a>
-    {{ data_points }}
+    <div ng-if="nick != ''" class="container">
+        <a class="btn btn-primary" href="#/player/{{ nick }}">Back to Player Page</a>
+    <div>
 </div>

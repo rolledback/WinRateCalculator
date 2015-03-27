@@ -127,5 +127,5 @@ if __name__ == '__main__':
     with open('config.ini', 'r') as in_file:
         app_id = eval(in_file.read())['app_id']
     load_vehicles()
-    app.run(debug = True, host = '0.0.0.0')
+    app.run(debug = False, host = '0.0.0.0')
 
